@@ -5,7 +5,7 @@ const logger = require('../middleware/logger');
 
 // Express router setup
 const express = require('express');
-const router = express.Router();
+const app = express();
 
 
 // Sample in-memory products database
@@ -39,12 +39,12 @@ let products = [
 let nextId = 3;
 
 // GET all products
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   res.json(products);
 });
 
 // GET single product
-router.get('/:id', (req, res, next) => {
+app.get('/:id', (req, res, next) => {
   const product = products.find(p => p.id === parseInt(req.params.id));
   if (!product) {
     const error = new Error('Product not found');
@@ -55,7 +55,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 // POST create product
-router.post('/', validateProduct, (req, res) => {
+app.post('/', validateProduct, (req, res) => {
   const { name, description, price, category, inStock } = req.body;
   
   if (!name || !description || !price || !category || typeof inStock !== 'boolean') {
@@ -78,7 +78,7 @@ router.post('/', validateProduct, (req, res) => {
 });
 
 // PUT update product
-router.put('/:id', validateProduct, (req, res) => {
+app.put('/:id', validateProduct, (req, res) => {
   const product = products.find(p => p.id === parseInt(req.params.id));
   if (!product) {
     const error = new Error('Product not found');
@@ -98,7 +98,7 @@ router.put('/:id', validateProduct, (req, res) => {
 });
 
 // DELETE product
-router.delete('/:id', (req, res, next) => {
+app.delete('/:id', (req, res, next) => {
   const index = products.findIndex(p => p.id === parseInt(req.params.id));
   if (index === -1) {
     const error = new Error('Product not found');
@@ -113,7 +113,7 @@ router.delete('/:id', (req, res, next) => {
 // Add these routes to products.js
 
 // Filter products by category
-router.get('/category/:category', (req, res) => {
+app.get('/category/:category', (req, res) => {
   const filteredProducts = products.filter(
     p => p.category.toLowerCase() === req.params.category.toLowerCase()
   );
@@ -121,7 +121,7 @@ router.get('/category/:category', (req, res) => {
 });
 
 // Pagination for product listing
-router.get('/page/:pageNumber', (req, res) => {
+app.get('/page/:pageNumber', (req, res) => {
   const page = parseInt(req.params.pageNumber) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const startIndex = (page - 1) * limit;
@@ -138,7 +138,7 @@ router.get('/page/:pageNumber', (req, res) => {
 });
 
 // Search products by name
-router.get('/search/:query', (req, res) => {
+app.get('/search/:query', (req, res) => {
   const query = req.params.query.toLowerCase();
   const results = products.filter(p => 
     p.name.toLowerCase().includes(query) || 
@@ -149,7 +149,7 @@ router.get('/search/:query', (req, res) => {
 });
 
 // Product statistics
-router.get('/stats', (req, res) => {
+app.get('/stats', (req, res) => {
   const stats = {
     totalProducts: products.length,
     inStock: products.filter(p => p.inStock).length,
@@ -167,4 +167,4 @@ router.get('/stats', (req, res) => {
   res.json(stats);
 });
 
-module.exports = router;
+module.exports = app;
