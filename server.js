@@ -56,31 +56,31 @@ app.get('/', (req, res) => {
 });
 
 // Import routes
-const productsRouter = require('./routes/products');
-app.use('/api/products', authenticate, productsRouter);
+const productsRoutes = require('./routes/products');
+app.use('/api/products', authenticate, productsRoutes);
 
-// All product routes are handled in ./routes/products via productsRouter.
+// All product routes are handled in ./routes/products via productsRoutes.
 
 // Example route implementation for GET /api/products
-// (Handled in productsRouter)
+// (Handled in productsRoutes)
 // - Authentication
 // - Error handling
 
-// Error handling middleware (should be after all routes)
-app.use((err, req, res, next) => {
-  if (err instanceof NotFoundError) {
-    return res.status(err.statusCode).json({ error: err.message });
-  }
+// // Error handling middleware (should be after all routes)
+// app.use((err, req, res, next) => {
+//   if (err instanceof NotFoundError) {
+//     return res.status(err.statusCode).json({ error: err.message });
+//   }
   
-  if (err instanceof ValidationError) {
-    return res.status(err.statusCode).json({ error: err.message, details: err.details });
-  }
-  if (err instanceof AuthError) {
-    return res.status(err.statusCode).json({ error: err.message });
-  }
-  console.error(err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+//   if (err instanceof ValidationError) {
+//     return res.status(err.statusCode).json({ error: err.message, details: err.details });
+//   }
+//   if (err instanceof AuthError) {
+//     return res.status(err.statusCode).json({ error: err.message });
+//   }
+//   console.error(err);
+//   res.status(500).json({ error: 'Internal Server Error' });
+// });
 
 // Start the server
 app.listen(PORT, () => {
