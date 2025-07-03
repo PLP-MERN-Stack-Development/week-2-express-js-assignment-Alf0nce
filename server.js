@@ -8,9 +8,19 @@ const { v4: uuidv4 } = require('uuid');
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
+// const { NotFoundError, ValidationError, asyncHandler } = require('../errors');
 
 // Middleware setup
 app.use(bodyParser.json());
+
+// import custom middleware
+const authenticate = require('./middleware/auth');
+const logger = require('./middleware/logger');
+
+// use logger middleware for all routes
+app.use(logger);
+
+// error handling middleware
 
 // Sample in-memory products database
 let products = [
@@ -39,11 +49,17 @@ let products = [
     inStock: false
   }
 ];
-
+// hello world route
 // Root route
 app.get('/', (req, res) => {
+  res.send("Hello, World! This is the Product API.");
   res.send('Welcome to the Product API! Go to /api/products to see all products.');
 });
+
+// import routes
+const productRoutes = require('./routes/products');
+// Use product routes
+app.use('/api/products', productRoutes);
 
 // TODO: Implement the following routes:
 // GET /api/products - Get all products
