@@ -20,21 +20,7 @@ const logger = require('./middleware/logger');
 // Use logger middleware for all routes
 app.use(logger);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  if (err instanceof NotFoundError) {
-    return res.status(err.statusCode).json({ error: err.message });
-  }
-  
-  if (err instanceof ValidationError) {
-    return res.status(err.statusCode).json({ error: err.message, details: err.details });
-  }
-  if (err instanceof AuthError) {
-    return res.status(err.statusCode).json({ error: err.message });
-  }
-  console.error(err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
+// Error handling middleware (moved to after all routes)
 
 // Sample in-memory products database
 let products = [
